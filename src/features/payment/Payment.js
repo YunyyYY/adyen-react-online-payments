@@ -6,6 +6,8 @@ import { getAdyenConfig, getPaymentMethods, initiatePayment, submitAdditionalDet
 
 export function Payment() {
   const { type } = useParams();
+  // access match.params of the current <Route>.
+  // returns an object of key/value pairs of URL parameters.
   return (
     <div id="payment-page">
       <div className="container">
@@ -86,12 +88,14 @@ class CheckoutContainer extends React.Component {
   onSubmit(state, component) {
     const { billingAddress } = this.props.payment;
     if (state.isValid) {
+      // initiatePayment is an action to dispatch specified for the component.
       this.props.initiatePayment({
         ...state.data,
         billingAddress: this.props.type === "card" && billingAddress.enableBilling ? billingAddress : null,
         origin: window.location.origin
       });
       this.paymentComponent = component;
+      console.log(component)
     }
   }
 
@@ -109,10 +113,16 @@ class CheckoutContainer extends React.Component {
   }
 }
 
+// called whenever the store state changes, given the store state as the only parameter.
 const mapStateToProps = state => ({
   payment: state.payment
 });
 
+// functions that dispatch when called, to pass those functions as props to component.
 const mapDispatchToProps = { getAdyenConfig, getPaymentMethods, initiatePayment, submitAdditionalDetails };
 
+// connect() function connects a React component to a Redux store.
+// The return of connect() is a wrapper function that takes your component and 
+// returns a wrapper component with the additional props it injects.
+debugger
 export const ConnectedCheckoutContainer = connect(mapStateToProps, mapDispatchToProps)(CheckoutContainer);
